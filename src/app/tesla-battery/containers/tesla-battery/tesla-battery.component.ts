@@ -64,8 +64,9 @@ export class TeslaBatteryComponent implements OnInit {
     private results: Array<String> = ['60', '60D', '75', '75D', '90D', 'P100D'];
 
     constructor(public fb: FormBuilder, private batteryService: BatteryService) { }
-    ngOnInit() {
 
+    ngOnInit() {
+console.log('test')
         this.models = this.batteryService.getModelData();
 
         this.tesla = this.fb.group({
