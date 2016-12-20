@@ -34,7 +34,7 @@ import { BatteryService } from '../../tesla-battery.service';
                   </tesla-counter>
                   <tesla-climate 
                     [limit]="tesla.get('config.temperature').value > 10" 
-                    formControlName="climate">
+                    formControlName="climate"> 
                   </tesla-climate>
                 </div>
                 <tesla-wheels formControlName="wheels"></tesla-wheels>
@@ -66,7 +66,7 @@ export class TeslaBatteryComponent implements OnInit {
     constructor(public fb: FormBuilder, private batteryService: BatteryService) { }
 
     ngOnInit() {
-console.log('test')
+
         this.models = this.batteryService.getModelData();
 
         this.tesla = this.fb.group({
@@ -77,7 +77,6 @@ console.log('test')
                 wheels: 19
             })
         });
-
         this.stats = this.calculateStats(this.results, this.tesla.controls['config'].value);
 
         this.tesla.controls['config'].valueChanges.subscribe(data => {

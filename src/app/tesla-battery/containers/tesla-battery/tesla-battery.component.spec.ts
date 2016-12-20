@@ -39,13 +39,61 @@ describe('TeslaBatteryComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  fit('Should retrieve the model from the service', async(() => {
-    let fixture = TestBed.createComponent(TeslaBatteryComponent);
-    let app = fixture.debugElement.componentInstance;
-    let hds = fixture.debugElement.injector.get(BatteryService);
-    const saveSpy = spyOn(hds, 'getModelData').and.callThrough();
-    fixture.detectChanges();
-    expect(hds.getModelData).toHaveBeenCalled();
-  }));
+  describe('onInit', () => {
+    let fixture;
+    let app;
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TeslaBatteryComponent);
+      app = fixture.debugElement.componentInstance;
+    });
+
+    it('Should retrieve the model from the service when the component gets initialized', async(() => {
+      let batteryService = fixture.debugElement.injector.get(BatteryService);
+      spyOn(batteryService, 'getModelData').and.callThrough();
+      fixture.detectChanges();
+      expect(batteryService.getModelData).toHaveBeenCalled();
+    }));
+
+    it('Should initialize the stats.', async(() => {
+      fixture.detectChanges();
+      expect(app.stats).toEqual([
+        { model: '60', miles: 246 },
+        { model: '60D', miles: 250 },
+        { model: '75', miles: 297 },
+        { model: '75D', miles: 306 },
+        { model: '90D', miles: 336 },
+        { model: 'P100D', miles: 376 }
+      ]);
+    }));
+
+    it('Should update the stats when the values changes (climate true)', async(() => {
+      fixture.detectChanges();
+      app.tesla.controls['config'].setValue({ speed: 45, temperature: 20, climate: true, wheels: 19 });
+      fixture.detectChanges();
+      expect(app.stats).toEqual([
+        { model: '60', miles: 289 },
+        { model: '60D', miles: 293 },
+        { model: '75', miles: 350 },
+        { model: '75D', miles: 358 },
+        { model: '90D', miles: 394 },
+        { model: 'P100D', miles: 442 }
+      ]);
+    }));
+
+    it('Should update the stats when the values changes (climate true)', async(() => {
+      fixture.detectChanges();
+      app.tesla.controls['config'].setValue({ speed: 45, temperature: 20, climate: false, wheels: 19 });
+      fixture.detectChanges();
+      expect(app.stats).toEqual([
+        { model: '60', miles: 325 },
+        { model: '60D', miles: 330 },
+        { model: '75', miles: 393 },
+        { model: '75D', miles: 404 },
+        { model: '90D', miles: 443 },
+        { model: 'P100D', miles: 496 }
+      ]);
+    }));
+
+  });
 
 });
