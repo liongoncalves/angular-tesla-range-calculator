@@ -43,6 +43,7 @@ export class TeslaClimateComponent implements ControlValueAccessor {
     private onModelChange: Function;
 
     private onChange(value: boolean) {
+        console.log('onChange', value);
         this.value = !value;
         this.onModelChange(this.value);
     }
@@ -52,20 +53,22 @@ export class TeslaClimateComponent implements ControlValueAccessor {
     }
 
     registerOnTouched(fn: Function) {
-        this.onTouch = fn;
+        this.onTouch = fn;console.log('registerOnTouched');
     }
 
     writeValue(value: boolean) {
         this.value = value;
+        console.log('writeValue');
     }
 
     private onBlur(value: boolean) {
-        this.focused = false;
+        this.focused = false;console.log('onBlur');
     }
 
     private onFocus(value: boolean) {
         this.focused = value;
         this.onTouch();
+        console.log('onFocus');
     }
 
 }
