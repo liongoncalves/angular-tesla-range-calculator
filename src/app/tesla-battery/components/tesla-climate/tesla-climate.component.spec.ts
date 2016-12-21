@@ -4,7 +4,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { TeslaClimateComponent } from './tesla-climate.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-fdescribe('TeslaClimateComponent', () => {
+describe('TeslaClimateComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -21,36 +21,68 @@ fdescribe('TeslaClimateComponent', () => {
         expect(app).toBeTruthy();
     }));
 
+
     describe('onFocus', () => {
-        it('should work', () => {
-            let fixture = TestBed.createComponent(TeslaClimateComponent);
-            let app = fixture.debugElement.componentInstance;
+        let fixture;
+        let app;
+
+        beforeEach(() => {
+            fixture = TestBed.createComponent(TeslaClimateComponent);
+            app = fixture.debugElement.componentInstance;
+        });
+
+        it('Should register focus event', async(() => {
             let onTouchSpy = jasmine.createSpy('onTouchSpy');
             fixture.detectChanges();
             app.registerOnTouched(onTouchSpy);
             app.onFocus(true);
             expect(onTouchSpy).toHaveBeenCalled();
             expect(app.focused).toBeTruthy();
-        });
+        }));
 
-        fit('Should ', () => {
-            let fixture = TestBed.createComponent(TeslaClimateComponent);
+        it('Should trigger focus event and update values when input element is focused', async(() => {
+            let input = fixture.debugElement.query(By.css('input'));
+            let label = fixture.debugElement.query(By.css('label'));
+            let onTouchSpy = jasmine.createSpy('onTouchSpy');
 
+            fixture.detectChanges();
+            app.registerOnTouched(onTouchSpy);
+            input.triggerEventHandler('focus', true);
+            expect(onTouchSpy).toHaveBeenCalled();
+            expect(app.focused).toBeTruthy();
+        }));
+    });
+
+    describe('blur', () => {
+
+        it('Should update values when input element is blur', async(() => {
+            let fixture = TestBed.createComponent(TeslaClimateComponent);;
             let app = fixture.debugElement.componentInstance;
             let input = fixture.debugElement.query(By.css('input'));
             let label = fixture.debugElement.query(By.css('label'));
-            
-            let onTouchSpy = jasmine.createSpy('onTouchSpy');
-            
+
             fixture.detectChanges();
-            app.registerOnChange(onTouchSpy);
-            input.nativeElement.value  = true
+            input.triggerEventHandler('blur', true);
+            expect(app.focused).toBeFalsy();
+        }));
+    });
+
+    describe('change', () => {
+
+        it('Should update values when input element change', async(() => {
+            let fixture = TestBed.createComponent(TeslaClimateComponent);;
+            let app = fixture.debugElement.componentInstance;
+            let input = fixture.debugElement.query(By.css('input'));
+            let label = fixture.debugElement.query(By.css('label'));
+            let onChangeSpy = jasmine.createSpy('onChange');
+
             fixture.detectChanges();
-            //expect(onTouchSpy).toHaveBeenCalled();
-            console.log(label.classes)
-            console.log(app.focused);
-            console.log(label.classes)
-        });
+            app.registerOnChange(onChangeSpy);
+            fixture.detectChanges();
+            input.triggerEventHandler('change', true);
+            expect(app.focused).toBeFalsy();
+            expect(onChangeSpy).toHaveBeenCalled();
+        }));
     });
 
 });
