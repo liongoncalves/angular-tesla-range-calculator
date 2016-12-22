@@ -4,7 +4,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { TeslaClimateComponent } from './tesla-climate.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-describe('TeslaClimateComponent', () => {
+describe('TeslaClimateComponent: Integration', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -83,6 +83,36 @@ describe('TeslaClimateComponent', () => {
             expect(app.focused).toBeFalsy();
             expect(onChangeSpy).toHaveBeenCalled();
         }));
+    });
+
+});
+
+
+describe('TeslaClimateComponent: Isolated', () => {
+    let component;
+
+    beforeEach(() => {
+        component = new TeslaClimateComponent();
+    });
+
+    it('should set focused false on blur', () => {
+        component.onBlur(true);
+        expect(component.focused).toBeFalsy();
+    });
+
+    it('should assign focused new value and call onTouch function', () => {
+        component.onTouch = jasmine.createSpy('onTouch');
+        component.onFocus(true);
+        expect(component.onTouch).toHaveBeenCalled();
+        expect(component.focused).toBeTruthy();
+    });
+
+    it('should update the value and call onModelChange function', () => {
+        let value = true;
+        component.onModelChange = jasmine.createSpy('onModelChange');
+        component.onChange(true);
+        expect(component.onModelChange).toHaveBeenCalledWith(!value);
+        expect(component.value).toBe(!value);
     });
 
 });

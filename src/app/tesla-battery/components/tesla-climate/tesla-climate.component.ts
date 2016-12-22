@@ -42,7 +42,7 @@ export class TeslaClimateComponent implements ControlValueAccessor {
     private onTouch: Function;
     private onModelChange: Function;
 
-    private onChange(value: boolean) {
+    onChange(value: boolean) {
         this.value = !value;
         this.onModelChange(this.value);
     }
@@ -59,11 +59,11 @@ export class TeslaClimateComponent implements ControlValueAccessor {
         this.value = value;
     }
 
-    private onBlur(value: boolean) {
+    onBlur(value: boolean) {
         this.focused = false;
     }
 
-    private onFocus(value: boolean) {
+    onFocus(value: boolean) {
         this.focused = value;
         this.onTouch();
     }

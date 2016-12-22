@@ -14,7 +14,9 @@ import { TeslaCounterComponent } from '../../components/tesla-counter/tesla-coun
 import { TeslaClimateComponent } from '../../components/tesla-climate/tesla-climate.component';
 import { TeslaWheelsComponent } from '../../components/tesla-wheels/tesla-wheels.component';
 
-describe('TeslaBatteryComponent', () => {
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+describe('TeslaBatteryComponent: Integration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -93,6 +95,64 @@ describe('TeslaBatteryComponent', () => {
         { model: 'P100D', miles: 496 }
       ]);
     }));
+
+  });
+
+});
+
+
+fdescribe('TeslaBatteryComponent: Isolated', () => {
+  let component;
+  let self;
+  beforeEach(() => {
+    self = this;
+
+    self.BatteryService = new BatteryService();
+    spyOn(self.BatteryService, 'getModelData').and.callThrough();
+
+    self.FormBuilder = new FormBuilder();
+    spyOn(self.FormBuilder, 'group').and.callThrough();
+    self.component = new TeslaBatteryComponent(self.FormBuilder, self.BatteryService);
+  });
+
+  describe('ngOnInit', () => {
+    beforeEach(() => {
+      spyOn(self.component, 'calculateStats').and.callThrough();
+      self.component.ngOnInit();
+    });
+
+    it('Should retrieve the model data from the battery service', () => {
+      expect(self.BatteryService.getModelData).toHaveBeenCalled();
+    });
+
+    it('Should create 2 form groups', () => {
+      expect(self.FormBuilder.group).toHaveBeenCalledTimes(2);
+      expect(self.FormBuilder.group).toHaveBeenCalledWith({
+        speed: 55,
+        temperature: 20,
+        climate: true,
+        wheels: 19
+      });
+      expect(self.FormBuilder.group).toHaveBeenCalledWith({ config: jasmine.any(FormGroup) });
+    });
+
+    it('should calculate stats', () => {
+      expect(self.component.calculateStats).toHaveBeenCalled();
+    });
+
+    describe('subscribe', () => {
+      it('test', () => {
+        self.component.tesla.controls['config'].setValue({ speed: 45, temperature: 20, climate: true, wheels: 19 });
+        expect(self.component.stats).toEqual([
+        { model: '60', miles: 289 },
+        { model: '60D', miles: 293 },
+        { model: '75', miles: 350 },
+        { model: '75D', miles: 358 },
+        { model: '90D', miles: 394 },
+        { model: 'P100D', miles: 442 }
+      ]);
+      });
+    });
 
   });
 
